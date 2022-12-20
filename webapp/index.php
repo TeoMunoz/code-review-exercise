@@ -1,5 +1,6 @@
 <?php $page_title = "Home ★ Productive"; ?>
 <?php require "view/blocks/page_start.php"; ?>
+<?php require "view/blocks/page_end.php"; ?>
 <h1>Welcome to Productive!</h1>
 
 <h2>Our most popular products</h2>
@@ -22,35 +23,36 @@ const updateProductTable = async function (table, productsToInsert) {
 
   // Insert the table rows for the found products
   const newTableRows = productsToInsert.map((product) => {
-    let thing = document.createElement('tr');
+    let stock = document.createElement('tr');
 
     const tds = [];
 
     for (let i = 0; i < columns.length; i++) {
       let column = columns[i];
 
+      //Stock filter
       let td = document.createElement('td');
-      if(column == 'stock') {
+      if(column === 'stock') {
         if (product[column] <= 3) {
           td.style.color = 'red'
         } else {
           td.style.color = 'black';
         }
       }
-      td.innerText = product[column]; // dunno lol
-      thing.appendChild(td);
+      td.innerText = product[column];
+      stock.appendChild(td);
     }
 
-    return thing
+    return stock;
   })
 
   table.replaceChildren(...newTableRows)
 }
 
 const init = async function () { // an async wrapper function which allows me to use await instead of .then()
-  const result1 = await fetch('API/V1/Products')
-  const _products = await result1.json()
-  const products = _products.filter((product) => product.active === "1")
+  const result = await fetch('API/V1/Products')
+  const productsResult = await result.json()
+  const products = productsResult.filter((product) => product.active === "1")
 
   console.log(products)
 
@@ -59,5 +61,3 @@ const init = async function () { // an async wrapper function which allows me to
 
 init();
 </script>
-
-<?php require "view/blocks/page_end.php"; ?>
